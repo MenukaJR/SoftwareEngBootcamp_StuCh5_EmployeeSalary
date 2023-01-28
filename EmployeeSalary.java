@@ -53,24 +53,49 @@ class calculations {
 public class EmployeeSalary {
 
     synchronized public static void main(String[] args) throws Exception {
-        int perDayPmnt, days, basicSalary;
+        final String  REG_EX;
+        String perDayPmnt, days;
+        int basicSalary;
         double allowPercent, EPF_Percent, employer_Contr_Percent, salaryWithAllowance, grossSalary;
-        
+        boolean flag = true;
         Scanner readInput = new Scanner(System.in);
         calculations cal = new calculations();
 
+
+        REG_EX = "^[a-zA-Z]*$";
+        perDayPmnt = "0";
+        days = "0";
         allowPercent = 0.05;
         EPF_Percent = 0.08;
         employer_Contr_Percent = 0.12;
 
+        while(flag == true){
+            
+            System.out.println("Enter Per Day Payment rate:  ");
+            perDayPmnt = readInput.nextLine();
 
-        System.out.println("Enter Per Day Payment rate:  ");
-        perDayPmnt = readInput.nextInt();
+            System.out.println("Enter Number of days: ");
+            days = readInput.nextLine();
+            
+            if(perDayPmnt.equals("0") || perDayPmnt == ""||perDayPmnt.matches(REG_EX)){
+               System.out.println("ERROR: Please enter a valid amount !!"); 
+            }else{
+                if(days.equals("0") || days == ""||days.matches(REG_EX)){
+                    System.out.println("ERROR: Please enter a valid number of days !!"); 
+                }else{
+                    flag = false;
+                    readInput.close();
+                }
+                
+            }
+        }
 
-        System.out.println("Enter Number of days: ");
-        days = readInput.nextInt();
 
-        cal.calBasicSal(perDayPmnt, days);
+  
+
+        
+
+        cal.calBasicSal(Integer.parseInt(perDayPmnt), Integer.parseInt(days));
         basicSalary = cal.getBasicSalary();
         
         //Thread1 to calculate Employee Allowance
@@ -78,7 +103,6 @@ public class EmployeeSalary {
 
             @Override
             public void run() {
-                double allowance;
                 cal.calAllowances(basicSalary, allowPercent);
             }
 
